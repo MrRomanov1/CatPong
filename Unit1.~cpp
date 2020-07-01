@@ -13,6 +13,32 @@ int x = -8;
 int y = -8;
 int movesCounter = 0;
 
+bool leftPaddleBounce (TImage * Ball, TImage * LeftPaddle) {
+     if (
+       Ball -> Left <= LeftPaddle -> Left + LeftPaddle -> Width &&
+       Ball -> Top - Ball -> Height <= LeftPaddle -> Top &&
+       Ball -> Top >= LeftPaddle -> Top - LeftPaddle -> Height
+     )  {
+     return true;
+     }
+     else {
+     return false;
+     }
+}
+
+bool rightPaddleBounce (TImage * Ball, TImage * RightPaddle) {
+     if (
+       Ball -> Left + Ball -> Width >= RightPaddle -> Left &&
+       Ball -> Top - Ball -> Height <= RightPaddle -> Top &&
+       Ball -> Top >= RightPaddle -> Top - RightPaddle -> Height
+     )  {
+     return true;
+     }
+     else {
+     return false;
+     }
+}
+
 //---------------------------------------------------------------------------
 __fastcall TForm1::TForm1(TComponent* Owner)
         : TForm(Owner)
@@ -28,9 +54,85 @@ void __fastcall TForm1::BallMovementTimer(TObject *Sender)
  if (Ball -> Top -5 <= Background -> Top) {
     y = -y;
  }
- if (Ball -> Top>= Background -> Height - Background -> Top - Ball -> Height + 5){
+ if (Ball -> Top>= Background -> Height - Background -> Top - Ball -> Height + 10){
     y = -y;
+    }
+ if (leftPaddleBounce(Ball, LeftPaddle)){
+    x = -x;
+    movesCounter ++;
+ }
+ if (rightPaddleBounce(Ball, RightPaddle)){
+    x = -x;
+    movesCounter ++;
+ }
+ if (movesCounter >= 3) {
+
+    BallMovement -> Interval = 10;
+    LeftPaddleUp -> Interval = 14;
+    LeftPaddleDown -> Interval = 14;
+    RightPaddleUp -> Interval = 14;
+    RightPaddleDown -> Interval = 14;
  }
 }
 //---------------------------------------------------------------------------
- 
+
+void __fastcall TForm1::LeftPaddleUpTimer(TObject *Sender)
+{
+     if (LeftPaddle -> Top > 5)  LeftPaddle -> Top -= 10;
+}
+//---------------------------------------------------------------------------
+void __fastcall TForm1::RightPaddleUpTimer(TObject *Sender)
+{
+ if (RightPaddle -> Top > 5)  RightPaddle -> Top -= 10;
+}
+//---------------------------------------------------------------------------
+void __fastcall TForm1::LeftPaddleDownTimer(TObject *Sender)
+{
+   if (LeftPaddle -> Top + LeftPaddle -> Height < Background -> Height + 10){
+     LeftPaddle -> Top += 10;
+   }
+}
+//---------------------------------------------------------------------------
+void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key,
+      TShiftState Shift)
+{
+      if (Key == VK_UP){
+      RightPaddleUp -> Enabled = true;
+      }
+      if (Key == 'a' || Key == 'A'){
+      LeftPaddleUp -> Enabled = true;
+      }
+      if (Key == VK_DOWN){
+      RightPaddleDown -> Enabled = true;
+      }
+      if (Key == 'z' || Key == 'Z'){
+      LeftPaddleDown -> Enabled = true;
+      }
+}
+//---------------------------------------------------------------------------
+void __fastcall TForm1::FormKeyUp(TObject *Sender, WORD &Key,
+      TShiftState Shift)
+{
+     if (Key == VK_UP){
+      RightPaddleUp -> Enabled = false;
+      }
+      if (Key == 'a' || Key == 'A'){
+      LeftPaddleUp -> Enabled = false;
+      }
+        if (Key == VK_DOWN){
+      RightPaddleDown -> Enabled = false;
+      }
+      if (Key == 'z' || Key == 'Z'){
+      LeftPaddleDown -> Enabled = false;
+      }
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::RightPaddleDownTimer(TObject *Sender)
+{
+ if (RightPaddle -> Top + RightPaddle -> Height < Background -> Height + 10){
+     RightPaddle -> Top += 10;
+   }
+}
+//---------------------------------------------------------------------------
+
