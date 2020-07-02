@@ -22,6 +22,12 @@ __published:	// IDE-managed Components
     TTimer *LeftPaddleDown;
     TTimer *RightPaddleUp;
     TTimer *RightPaddleDown;
+        TButton *Button1;
+        TRadioGroup *RadioGroup1;
+        TLabel *Label1;
+        TButton *Button2;
+        TButton *Button3;
+        TLabel *Label2;
     void __fastcall BallMovementTimer(TObject *Sender);
     void __fastcall LeftPaddleUpTimer(TObject *Sender);
     void __fastcall RightPaddleUpTimer(TObject *Sender);
@@ -31,6 +37,9 @@ __published:	// IDE-managed Components
                               TShiftState Shift);
     void __fastcall LeftPaddleDownTimer(TObject *Sender);
     void __fastcall RightPaddleDownTimer(TObject *Sender);
+        void __fastcall Button1Click(TObject *Sender);
+        void __fastcall Button2Click(TObject *Sender);
+        void __fastcall Button3Click(TObject *Sender);
 private:	// User declarations
 public:		// User declarations
     __fastcall TForm1(TComponent* Owner);

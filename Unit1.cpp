@@ -10,7 +10,12 @@
 TForm1 *Form1;
 
 int movesCounter = 0;
-AnsiString actualPlayer = "left";
+AnsiString actualPlayer = "";
+int leftPlayerPoints = 0;
+int rightPlayerPoints = 0;
+float x = 0;
+float y = 0;
+bool enableMusic = true;
 
 float randomizeVerticalBallMovement() {
     randomize();
@@ -37,12 +42,41 @@ float randomizeHorizontalBallMovement() {
     return horizontalBallMovement;
 }
 
-float x = randomizeHorizontalBallMovement();
-float y = randomizeVerticalBallMovement();
-
 //---------------------------------------------------------------------------
 __fastcall TForm1::TForm1(TComponent* Owner)
     : TForm(Owner) {
+}
+//---------------------------------------------------------------------------
+
+void __fastcall gameInitialization() {
+
+     x = randomizeHorizontalBallMovement();
+     y = randomizeVerticalBallMovement();
+
+     Form1 -> LeftPaddle -> Left = 0;
+     Form1 ->LeftPaddle -> Top = Form1 ->Background -> Height / 2 - Form1 ->LeftPaddle -> Height / 2;
+
+     Form1 ->RightPaddle -> Left = Form1 ->Background -> Width - Form1 ->RightPaddle -> Width;
+     Form1 ->RightPaddle -> Top = Form1 ->Background -> Height / 2 - Form1 ->RightPaddle -> Height / 2;
+
+     Form1 ->Ball -> Left = Form1 ->Background -> Width / 2 - Form1 ->Ball -> Width / 2;
+     Form1 ->Ball -> Top = Form1 ->Background -> Height / 2 - Form1 ->Ball -> Height / 2;
+
+     Form1 -> Ball -> Visible = true;
+     Form1 -> LeftPaddle -> Visible = true;
+     Form1 -> RightPaddle -> Visible = true;
+
+     Form1 -> BallMovement -> Enabled = true;
+
+     if (Form1 -> RadioGroup1 -> ItemIndex == 0) {
+         enableMusic = true;
+     }
+     if (Form1 -> RadioGroup1 -> ItemIndex == 1){
+         enableMusic = false;
+     }
+
+     movesCounter = 0;
+     actualPlayer = "";
 }
 //---------------------------------------------------------------------------
 
@@ -68,7 +102,25 @@ void __fastcall TForm1::BallMovementTimer(TObject *Sender) {
 
         BallMovement -> Enabled = false;
         Ball -> Visible = false;
-    }
+        if (actualPlayer == "left") {
+           leftPlayerPoints++;
+           Label1 -> Caption = "<---PUNKT DLA GRACZA LEWEGO";
+        }
+        else if (actualPlayer == "right"){
+           rightPlayerPoints++;
+           Label1 -> Caption = "PUNKT DLA GRACZA PRAWEGO--->";
+        }
+        else {
+             Label1 -> Caption = "BEZ PUNKTÓW";
+        }
+        Label1 -> Visible = true;
+        Label2 -> Caption = IntToStr(leftPlayerPoints) + ":" + IntToStr(rightPlayerPoints);
+        Label2 -> Visible = true;
+        Button2 -> Enabled = true;
+        Button2 -> Visible = true;
+        Button3 -> Enabled = true;
+        Button3 -> Visible = true;
+    } 
     //left paddle bounce
     if (Ball -> Left <= LeftPaddle -> Left + LeftPaddle -> Width-5 &&
             Ball -> Top + Ball -> Height/2 <= LeftPaddle -> Top + LeftPaddle -> Height &&
@@ -84,7 +136,6 @@ void __fastcall TForm1::BallMovementTimer(TObject *Sender) {
                     Ball -> Top + Ball -> Height /2 >= LeftPaddle -> Top) {
 
                 x = -0.8 * x;
-                y = 0.8 * y;
             }
             //middle left paddle bounce
             else if (Ball -> Left <= LeftPaddle -> Left + LeftPaddle -> Width &&
@@ -100,7 +151,6 @@ void __fastcall TForm1::BallMovementTimer(TObject *Sender) {
                      Ball -> Top + Ball -> Height /2 >= LeftPaddle -> Top + 1/2 * LeftPaddle -> Height) {
 
                 x = -1.2 * x;
-                y = 1.2 * y;
             }
         }
     }
@@ -119,7 +169,6 @@ void __fastcall TForm1::BallMovementTimer(TObject *Sender) {
                     Ball -> Top + Ball -> Height/2 >= RightPaddle -> Top) {
 
                 x = -0.8 * x;
-                y = 0.8 * y;
             }
             //middle right paddle bounce
             else if (Ball -> Left + Ball -> Width >= RightPaddle -> Left &&
@@ -132,7 +181,6 @@ void __fastcall TForm1::BallMovementTimer(TObject *Sender) {
                      Ball -> Top + Ball -> Height/2 <= RightPaddle -> Top + RightPaddle -> Height &&
                      Ball -> Top + Ball -> Height/2 >= RightPaddle -> Top + 1/2 * RightPaddle -> Height) {
                 x = -1.2 * x;
-                y = 1.2 * y;
             }
         }
     }
@@ -192,6 +240,46 @@ void __fastcall TForm1::RightPaddleDownTimer(TObject *Sender) {
     if (RightPaddle -> Top + RightPaddle -> Height < Background -> Height + 10) {
         RightPaddle -> Top += 15;
     }
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::Button1Click(TObject *Sender)
+{
+     gameInitialization();
+     leftPlayerPoints = 0;
+     rightPlayerPoints = 0;
+     Button1 -> Enabled = false;
+     Button1 -> Visible = false;
+     RadioGroup1 -> Enabled = false;
+     RadioGroup1 -> Visible = false;
+}
+//---------------------------------------------------------------------------
+
+
+
+void __fastcall TForm1::Button2Click(TObject *Sender)
+{
+     Label1 -> Visible = false;
+     Label2 -> Visible = false;
+     Button2 -> Enabled = false;
+     Button2 -> Visible = false;
+     Button3 -> Enabled = false;
+     Button3 -> Visible = false;
+     gameInitialization();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::Button3Click(TObject *Sender)
+{
+     Label1 -> Visible = false;
+     Label2 -> Visible = false;
+     Button2 -> Enabled = false;
+     Button2 -> Visible = false;
+     Button3 -> Enabled = false;
+     Button3 -> Visible = false;
+     gameInitialization();
+     leftPlayerPoints = 0;
+     rightPlayerPoints = 0;
 }
 //---------------------------------------------------------------------------
 

@@ -5,8 +5,8 @@ object Form1: TForm1
   BorderStyle = bsToolWindow
   BorderWidth = 5
   Caption = 'PingPongTheGame'
-  ClientHeight = 583
-  ClientWidth = 1033
+  ClientHeight = 576
+  ClientWidth = 1023
   Color = clBtnFace
   UseDockManager = True
   Font.Charset = DEFAULT_CHARSET
@@ -2805,8 +2805,8 @@ object Form1: TForm1
       6D4903B473A3A8C9560453407FFFD9}
   end
   object Ball: TImage
-    Left = 480
-    Top = 400
+    Left = 464
+    Top = 328
     Width = 50
     Height = 50
     AutoSize = True
@@ -3052,10 +3052,11 @@ object Form1: TForm1
       FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
       FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000}
     Transparent = True
+    Visible = False
   end
   object LeftPaddle: TImage
-    Left = 8
-    Top = 192
+    Left = 0
+    Top = 184
     Width = 60
     Height = 250
     AutoSize = True
@@ -4470,10 +4471,11 @@ object Form1: TForm1
       FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
       FFFFFFFFFFFFFFFFFFFF}
     Transparent = True
+    Visible = False
   end
   object RightPaddle: TImage
     Left = 964
-    Top = 184
+    Top = 176
     Width = 60
     Height = 250
     AutoSize = True
@@ -5888,8 +5890,110 @@ object Form1: TForm1
       FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
       FFFFFFFFFFFFFFFFFFFF}
     Transparent = True
+    Visible = False
+  end
+  object Label1: TLabel
+    Left = 344
+    Top = 56
+    Width = 331
+    Height = 45
+    Caption = 'PUNKT DLA GRACZA'
+    Font.Charset = EASTEUROPE_CHARSET
+    Font.Color = clWhite
+    Font.Height = -32
+    Font.Name = 'Comic Sans MS'
+    Font.Style = [fsBold]
+    ParentFont = False
+    Transparent = True
+    Visible = False
+  end
+  object Label2: TLabel
+    Left = 416
+    Top = 112
+    Width = 175
+    Height = 67
+    Caption = 'WYNIK'
+    Font.Charset = EASTEUROPE_CHARSET
+    Font.Color = clWhite
+    Font.Height = -48
+    Font.Name = 'Comic Sans MS'
+    Font.Style = [fsBold]
+    ParentFont = False
+    Transparent = True
+    Visible = False
+  end
+  object Button1: TButton
+    Left = 416
+    Top = 192
+    Width = 177
+    Height = 41
+    Caption = 'Rozpocznij Gr'#281
+    DragCursor = crHandPoint
+    Font.Charset = EASTEUROPE_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -21
+    Font.Name = 'Comic Sans MS'
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 0
+    OnClick = Button1Click
+  end
+  object RadioGroup1: TRadioGroup
+    Left = 416
+    Top = 240
+    Width = 177
+    Height = 73
+    Caption = 'D'#378'wi'#281'ki w grze'
+    Font.Charset = EASTEUROPE_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -19
+    Font.Name = 'Comic Sans MS'
+    Font.Style = [fsBold]
+    ItemIndex = 0
+    Items.Strings = (
+      'TAK'
+      'NIE')
+    ParentFont = False
+    TabOrder = 1
+  end
+  object Button2: TButton
+    Left = 392
+    Top = 408
+    Width = 201
+    Height = 41
+    Caption = 'GRAJ DALEJ'
+    DragCursor = crHandPoint
+    Enabled = False
+    Font.Charset = EASTEUROPE_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -27
+    Font.Name = 'Comic Sans MS'
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 2
+    Visible = False
+    OnClick = Button2Click
+  end
+  object Button3: TButton
+    Left = 392
+    Top = 464
+    Width = 201
+    Height = 41
+    Caption = 'OD NOWA'
+    DragCursor = crHandPoint
+    Enabled = False
+    Font.Charset = EASTEUROPE_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -27
+    Font.Name = 'Comic Sans MS'
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 3
+    Visible = False
+    OnClick = Button3Click
   end
   object BallMovement: TTimer
+    Enabled = False
     Interval = 30
     OnTimer = BallMovementTimer
     Left = 40
