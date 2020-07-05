@@ -51,9 +51,9 @@ float randomizeHorizontalBallMovement() {
 
 void generateObstacleSymbols() {
 
-    //randomize();
+    randomize();
     for (int i = 0; i < 100; i++) {
-        obstacleSymbol [i] =  1;//random (5) + 1;
+        obstacleSymbol [i] = random (2) + 1;
     }
 }
 
@@ -106,6 +106,12 @@ void __fastcall gameInitialization() {
     Form1 ->Ball -> Left = Form1 ->Background -> Width / 2 - Form1 ->Ball -> Width / 2;
     Form1 ->Ball -> Top = Form1 ->Background -> Height / 2 - Form1 ->Ball -> Height / 2;
 
+    Form1 -> BallMovement -> Interval = 30;
+    Form1 -> LeftPaddleDown -> Interval = 30;
+    Form1 -> LeftPaddleUp -> Interval = 30;
+    Form1 -> RightPaddleDown -> Interval = 30;
+    Form1 -> RightPaddleUp -> Interval = 30;
+
     Form1 -> Ball -> Visible = true;
     Form1 -> LeftPaddle -> Visible = true;
     Form1 -> RightPaddle -> Visible = true;
@@ -134,23 +140,36 @@ void __fastcall setRandomNyanPosition() {
 }
 
 void __fastcall setObstacle() {
+    Form1 -> Label1 -> Visible = true;
+    Form1 -> Label1 -> Caption = IntToStr(obstacleSymbol[obstacleNumber]);
 
     switch (obstacleSymbol[obstacleNumber]) {
     case 1: {
         Form1 -> Ball2 -> Enabled = true;
         Form1 -> Ball2 -> Visible = true;
 
-        Form1 ->Ball2 -> Left = Form1 -> Ball -> Left;
-        Form1 ->Ball2 -> Top = Form1 -> Ball -> Top;
+        Form1 ->Ball2 -> Left = Form1 ->Background -> Width / 2 - Form1 ->Ball2 -> Width / 2;
+        Form1 ->Ball2 -> Top = Form1 ->Background -> Height / 2 - Form1 ->Ball2 -> Height / 2;
 
         x2 = -x;
         y2 = -y;
 
         Form1 -> Ball2Movement -> Enabled = true;
-
     }
-    }
+    break;
+    case 2: {
 
+        Form1 -> Ball2Movement -> Enabled = false;
+        Form1 -> Ball2 -> Enabled = false;
+        Form1 -> Ball2 -> Visible = false;
+        Form1 -> BallMovement -> Interval = (Form1 -> BallMovement -> Interval) * 0.85;
+        Form1 -> LeftPaddleDown -> Interval = (Form1 -> LeftPaddleDown -> Interval) * 0.85;
+        Form1 -> LeftPaddleUp -> Interval = (Form1 -> LeftPaddleUp -> Interval) * 0.85;
+        Form1 -> RightPaddleDown -> Interval = (Form1 -> RightPaddleDown -> Interval) * 0.85;
+        Form1 -> RightPaddleUp -> Interval = (Form1 -> RightPaddleUp -> Interval) * 0.85;
+    }
+    break;
+    }
     obstacleNumber++;
 }
 
@@ -212,7 +231,6 @@ void __fastcall TForm1::BallMovementTimer(TObject *Sender) {
             Ball -> Top + Ball -> Height/2 >= LeftPaddle -> Top) {
 
         movesCounter ++;
-        actualPlayer = "left";
         if (movesCounter%3 == 0 && launchNyanObstacle()) {
             setRandomNyanPosition();
         }
@@ -248,7 +266,6 @@ void __fastcall TForm1::BallMovementTimer(TObject *Sender) {
             Ball -> Top + Ball -> Height/2 >= RightPaddle -> Top) {
 
         movesCounter ++;
-        actualPlayer = "right";
         if (launchNyanObstacle()) {
             setRandomNyanPosition();
             NyanMovement -> Enabled = true;
@@ -432,7 +449,7 @@ void __fastcall TForm1::Ball2MovementTimer(TObject *Sender) {
         Ball2 -> Visible = false;
         Obstacle -> Visible = false;
         NyanMovement -> Enabled = false;
-        
+
         if ((( Ball2->Left < LeftPaddle->Left  &&
                 (Ball2->Top + Ball2->Height / 2 < LeftPaddle->Top ||
                  Ball2->Top + Ball2->Height / 2 > LeftPaddle->Top + LeftPaddle->Height)))) {
@@ -461,12 +478,7 @@ void __fastcall TForm1::Ball2MovementTimer(TObject *Sender) {
             Ball2 -> Top + Ball2 -> Height/2 >= LeftPaddle -> Top) {
 
         movesCounter ++;
-        actualPlayer = "left";
-        if (movesCounter%3 == 0 && launchNyanObstacle()) {
-            setRandomNyanPosition();
-        }
-        //
-        if(x < 0) {
+        if(x2 < 0) {
             //top left paddle bounce
             if (Ball2 -> Left <= LeftPaddle -> Left + LeftPaddle -> Width &&
                     Ball2 -> Top + Ball2 -> Height /2 <= LeftPaddle -> Top + LeftPaddle -> Height/4 &&
@@ -495,15 +507,9 @@ void __fastcall TForm1::Ball2MovementTimer(TObject *Sender) {
     if (Ball2 -> Left + Ball2 -> Width >= RightPaddle -> Left &&
             Ball2 -> Top + Ball2 -> Height/2 <= RightPaddle -> Top + RightPaddle -> Height &&
             Ball2 -> Top + Ball2 -> Height/2 >= RightPaddle -> Top) {
-
+            
         movesCounter ++;
-        actualPlayer = "right";
-        if (launchNyanObstacle()) {
-            setRandomNyanPosition();
-            NyanMovement -> Enabled = true;
-        }
-
-        if (x > 0) {
+        if (x2 > 0) {
             //top right paddle bounce
             if (Ball2 -> Left + Ball2 -> Width >= RightPaddle -> Left &&
                     Ball2 -> Top + Ball2 -> Height/2 <= RightPaddle -> Top + RightPaddle -> Height / 4 &&
@@ -524,14 +530,6 @@ void __fastcall TForm1::Ball2MovementTimer(TObject *Sender) {
                 x2 = -1.2 * x2;
             }
         }
-    }
-    if (ballWithNyanCollision(Ball2, Obstacle)&& Obstacle -> Visible == true) {
-
-        x2 = -x2;
-        y2 = -y2;
-        Obstacle -> Visible = false;
-        NyanMovement -> Enabled = false;
-        setObstacle();
     }
 }
 //---------------------------------------------------------------------------
