@@ -6379,6 +6379,38 @@ object Form1: TForm1
     Transparent = True
     Visible = False
   end
+  object Label4: TLabel
+    Left = 824
+    Top = 528
+    Width = 183
+    Height = 30
+    Alignment = taCenter
+    Caption = 'Rekord meczu: 50'
+    Font.Charset = EASTEUROPE_CHARSET
+    Font.Color = clWhite
+    Font.Height = -21
+    Font.Name = 'Comic Sans MS'
+    Font.Style = [fsBold]
+    ParentFont = False
+    Transparent = True
+    Visible = False
+  end
+  object Label5: TLabel
+    Left = 16
+    Top = 16
+    Width = 26
+    Height = 30
+    Alignment = taCenter
+    Caption = '50'
+    Font.Charset = EASTEUROPE_CHARSET
+    Font.Color = clWhite
+    Font.Height = -21
+    Font.Name = 'Comic Sans MS'
+    Font.Style = [fsBold]
+    ParentFont = False
+    Transparent = True
+    Visible = False
+  end
   object Button1: TButton
     Left = 416
     Top = 192
@@ -6415,7 +6447,7 @@ object Form1: TForm1
   end
   object Button2: TButton
     Left = 392
-    Top = 408
+    Top = 392
     Width = 201
     Height = 41
     Caption = 'GRAJ DALEJ'
@@ -6433,7 +6465,7 @@ object Form1: TForm1
   end
   object Button3: TButton
     Left = 392
-    Top = 464
+    Top = 448
     Width = 201
     Height = 41
     Caption = 'OD NOWA'
@@ -6496,6 +6528,12 @@ object Form1: TForm1
     Interval = 20
     OnTimer = Ball2MovementTimer
     Left = 776
+    Top = 56
+  end
+  object InvisiblePaddles: TTimer
+    Enabled = False
+    OnTimer = InvisiblePaddlesTimer
+    Left = 712
     Top = 56
   end
 end
