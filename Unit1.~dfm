@@ -6233,4 +6233,11 @@ object Form1: TForm1
     Left = 968
     Top = 56
   end
+  object NyanMovement: TTimer
+    Enabled = False
+    Interval = 20
+    OnTimer = NyanMovementTimer
+    Left = 848
+    Top = 56
+  end
 end
