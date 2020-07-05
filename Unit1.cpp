@@ -2,6 +2,7 @@
 
 #include <vcl.h>
 #include <algorithm>
+#include "mmsystem.h"
 #pragma hdrstop
 
 #include "Unit1.h"
@@ -11,7 +12,6 @@
 TForm1 *Form1;
 
 int movesCounter = 0;
-AnsiString actualPlayer = "";
 int leftPlayerPoints = 0;
 int rightPlayerPoints = 0;
 float x = 0;
@@ -23,6 +23,8 @@ int nyanRounds[100];
 int obstacleNumber = 0;
 int obstacleSymbol[100];
 int verticalNyanMovement = 8;
+int debuffTimer = 5;
+int matchRecord = 0;
 
 float randomizeVerticalBallMovement() {
     randomize();
@@ -32,7 +34,7 @@ float randomizeVerticalBallMovement() {
 
     if (negativity == 1) {
         verticalBallMovement = -verticalBallMovement;
-        actualPlayer = "right";
+
     }
     return verticalBallMovement;
 }
@@ -53,7 +55,7 @@ void generateObstacleSymbols() {
 
     randomize();
     for (int i = 0; i < 100; i++) {
-        obstacleSymbol [i] = random (2) + 1;
+        obstacleSymbol [i] = random (3) + 1;
     }
 }
 
@@ -126,7 +128,9 @@ void __fastcall gameInitialization() {
     }
 
     movesCounter = 0;
-    actualPlayer = "";
+    Form1 -> Label5 -> Visible = true;
+    Form1 -> Label5 -> Caption = IntToStr(movesCounter);
+
 }
 void __fastcall setRandomNyanPosition() {
 
@@ -140,16 +144,13 @@ void __fastcall setRandomNyanPosition() {
 }
 
 void __fastcall setObstacle() {
-    Form1 -> Label1 -> Visible = true;
-    Form1 -> Label1 -> Caption = IntToStr(obstacleSymbol[obstacleNumber]);
-
     switch (obstacleSymbol[obstacleNumber]) {
     case 1: {
         Form1 -> Ball2 -> Enabled = true;
         Form1 -> Ball2 -> Visible = true;
 
-        Form1 ->Ball2 -> Left = Form1 ->Background -> Width / 2 - Form1 ->Ball2 -> Width / 2;
-        Form1 ->Ball2 -> Top = Form1 ->Background -> Height / 2 - Form1 ->Ball2 -> Height / 2;
+        Form1 ->Ball2 -> Left = Form1 -> Ball -> Left;
+        Form1 ->Ball2 -> Top = Form1 -> Ball -> Top;
 
         x2 = -x;
         y2 = -y;
@@ -167,6 +168,13 @@ void __fastcall setObstacle() {
         Form1 -> LeftPaddleUp -> Interval = (Form1 -> LeftPaddleUp -> Interval) * 0.85;
         Form1 -> RightPaddleDown -> Interval = (Form1 -> RightPaddleDown -> Interval) * 0.85;
         Form1 -> RightPaddleUp -> Interval = (Form1 -> RightPaddleUp -> Interval) * 0.85;
+    }
+    break;
+    case 3: {
+        Form1 -> LeftPaddle -> Visible = false;
+        Form1 -> RightPaddle -> Visible = false;
+
+        Form1 -> InvisiblePaddles -> Enabled = true;
     }
     break;
     }
@@ -214,16 +222,24 @@ void __fastcall TForm1::BallMovementTimer(TObject *Sender) {
             leftPlayerPoints++;
             Label1 -> Caption = "<---PUNKT DLA GRACZA LEWEGO";
         }
-
+        if (movesCounter >= matchRecord) {
+            matchRecord = movesCounter;
+        }
+        if (enableMusic) {
+            sndPlaySound("snd/meowOut.wav", SND_ASYNC);
+        }
         Label1 -> Visible = true;
         Label2 -> Caption = IntToStr(leftPlayerPoints) + ":" + IntToStr(rightPlayerPoints);
         Label2 -> Visible = true;
         Label3 -> Caption = "Odbicia: " +  IntToStr(movesCounter);
         Label3 -> Visible = true;
+        Label4 -> Caption = "Rekord meczu: " +  IntToStr(matchRecord);
+        Label4 -> Visible = true;
         Button2 -> Enabled = true;
         Button2 -> Visible = true;
         Button3 -> Enabled = true;
         Button3 -> Visible = true;
+        Label5 -> Visible = false;
     }
     //left paddle bounce
     if (Ball -> Left <= LeftPaddle -> Left + LeftPaddle -> Width-5 &&
@@ -231,6 +247,7 @@ void __fastcall TForm1::BallMovementTimer(TObject *Sender) {
             Ball -> Top + Ball -> Height/2 >= LeftPaddle -> Top) {
 
         movesCounter ++;
+        Label5 -> Caption = IntToStr(movesCounter);
         if (movesCounter%3 == 0 && launchNyanObstacle()) {
             setRandomNyanPosition();
         }
@@ -266,6 +283,7 @@ void __fastcall TForm1::BallMovementTimer(TObject *Sender) {
             Ball -> Top + Ball -> Height/2 >= RightPaddle -> Top) {
 
         movesCounter ++;
+        Label5 -> Caption = IntToStr(movesCounter);
         if (launchNyanObstacle()) {
             setRandomNyanPosition();
             NyanMovement -> Enabled = true;
@@ -294,7 +312,9 @@ void __fastcall TForm1::BallMovementTimer(TObject *Sender) {
         }
     }
     if (ballWithNyanCollision(Ball, Obstacle)&& Obstacle -> Visible == true) {
-
+        if (enableMusic) {
+            sndPlaySound("snd/bounce.wav", SND_ASYNC);
+        }
         x = -x;
         y = -y;
         Obstacle -> Visible = false;
@@ -361,6 +381,10 @@ void __fastcall TForm1::RightPaddleDownTimer(TObject *Sender) {
 //---------------------------------------------------------------------------
 
 void __fastcall TForm1::Button1Click(TObject *Sender) {
+
+    if (enableMusic) {
+        sndPlaySound("snd/click.wav", SND_ASYNC);
+    }
     gameInitialization();
     generateNyanRounds();
     generateObstacleSymbols();
@@ -376,6 +400,10 @@ void __fastcall TForm1::Button1Click(TObject *Sender) {
 
 
 void __fastcall TForm1::Button2Click(TObject *Sender) {
+
+    if (enableMusic) {
+        sndPlaySound("snd/click.wav", SND_ASYNC);
+    }
     Label1 -> Visible = false;
     Label2 -> Visible = false;
     Label3 -> Visible = false;
@@ -391,6 +419,10 @@ void __fastcall TForm1::Button2Click(TObject *Sender) {
 //---------------------------------------------------------------------------
 
 void __fastcall TForm1::Button3Click(TObject *Sender) {
+
+    if (enableMusic) {
+        sndPlaySound("snd/click.wav", SND_ASYNC);
+    }
     Label1 -> Visible = false;
     Label2 -> Visible = false;
     Label3 -> Visible = false;
@@ -405,6 +437,7 @@ void __fastcall TForm1::Button3Click(TObject *Sender) {
     generateObstacleSymbols();
     leftPlayerPoints = 0;
     rightPlayerPoints = 0;
+    matchRecord = 0;
 }
 //---------------------------------------------------------------------------
 
@@ -462,15 +495,24 @@ void __fastcall TForm1::Ball2MovementTimer(TObject *Sender) {
             leftPlayerPoints++;
             Label1 -> Caption = "<---PUNKT DLA GRACZA LEWEGO";
         }
+        if (movesCounter >= matchRecord) {
+            matchRecord = movesCounter;
+        }
+        if (enableMusic) {
+            sndPlaySound("snd/meowOut.wav", SND_ASYNC);
+        }
         Label1 -> Visible = true;
         Label2 -> Caption = IntToStr(leftPlayerPoints) + ":" + IntToStr(rightPlayerPoints);
         Label2 -> Visible = true;
         Label3 -> Caption = "Odbicia: " +  IntToStr(movesCounter);
         Label3 -> Visible = true;
+        Label4 -> Caption = "Rekord meczu: " +  IntToStr(matchRecord);
+        Label4 -> Visible = true;
         Button2 -> Enabled = true;
         Button2 -> Visible = true;
         Button3 -> Enabled = true;
         Button3 -> Visible = true;
+        Label5 -> Visible = false;
     }
     //left paddle bounce
     if (Ball2 -> Left <= LeftPaddle -> Left + LeftPaddle -> Width-5 &&
@@ -478,6 +520,7 @@ void __fastcall TForm1::Ball2MovementTimer(TObject *Sender) {
             Ball2 -> Top + Ball2 -> Height/2 >= LeftPaddle -> Top) {
 
         movesCounter ++;
+        Label5 -> Caption = IntToStr(movesCounter);
         if(x2 < 0) {
             //top left paddle bounce
             if (Ball2 -> Left <= LeftPaddle -> Left + LeftPaddle -> Width &&
@@ -507,8 +550,9 @@ void __fastcall TForm1::Ball2MovementTimer(TObject *Sender) {
     if (Ball2 -> Left + Ball2 -> Width >= RightPaddle -> Left &&
             Ball2 -> Top + Ball2 -> Height/2 <= RightPaddle -> Top + RightPaddle -> Height &&
             Ball2 -> Top + Ball2 -> Height/2 >= RightPaddle -> Top) {
-            
+
         movesCounter ++;
+        Label5 -> Caption = IntToStr(movesCounter);
         if (x2 > 0) {
             //top right paddle bounce
             if (Ball2 -> Left + Ball2 -> Width >= RightPaddle -> Left &&
@@ -530,6 +574,20 @@ void __fastcall TForm1::Ball2MovementTimer(TObject *Sender) {
                 x2 = -1.2 * x2;
             }
         }
+    }
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::InvisiblePaddlesTimer(TObject *Sender) {
+    debuffTimer--;
+
+    if (debuffTimer == 0) {
+
+        LeftPaddle -> Visible = true;
+        RightPaddle -> Visible = true;
+        InvisiblePaddles -> Enabled = false;
+
+        debuffTimer = 5;
     }
 }
 //---------------------------------------------------------------------------
