@@ -28,6 +28,8 @@ __published:	// IDE-managed Components
         TButton *Button2;
         TButton *Button3;
         TLabel *Label2;
+        TLabel *Label3;
+        TImage *Obstacle;
     void __fastcall BallMovementTimer(TObject *Sender);
     void __fastcall LeftPaddleUpTimer(TObject *Sender);
     void __fastcall RightPaddleUpTimer(TObject *Sender);
