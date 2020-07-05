@@ -1,6 +1,8 @@
 //---------------------------------------------------------------------------
 
 #include <vcl.h>
+#include <vector>
+#include <algorithm>
 #pragma hdrstop
 
 #include "Unit1.h"
@@ -16,6 +18,10 @@ int rightPlayerPoints = 0;
 float x = 0;
 float y = 0;
 bool enableMusic = true;
+int nyanRounds[100];
+int obstacleNumber = 0;
+int obstacleSymbol[100];
+int verticalNyanMovement = 8;
 
 float randomizeVerticalBallMovement() {
     randomize();
@@ -41,6 +47,44 @@ float randomizeHorizontalBallMovement() {
     }
     return horizontalBallMovement;
 }
+
+void generateObstacleSymbols(){
+
+     for (int i = 0; i < 100; i++){
+         randomize();
+         obstacleSymbol [i] = random (5) + 1;
+     }
+}
+
+void generateNyanRounds(){
+     randomize();
+     for (int i = 0; i < 100; i++){
+         nyanRounds[i] = random (100) + 2;
+     }
+     std::sort(nyanRounds, (nyanRounds+(sizeof(nyanRounds)/sizeof(nyanRounds[0]))));
+}
+
+bool launchNyanObstacle(){
+
+     for (int i = 0; i < 100; i++){
+         if (movesCounter == nyanRounds[i]){
+            return true;
+         }
+     }
+return false;
+}
+
+bool ballWithNyanCollision( TImage * Ball, TImage * Obstacle){
+            if (Ball -> Left >= Obstacle -> Left - Ball -> Width &&
+               Ball -> Left <= Obstacle -> Left + Obstacle -> Width &&
+               Ball -> Top >= Obstacle -> Top - Obstacle -> Height &&
+               Ball -> Top <= Obstacle -> Top + Obstacle -> Height){
+               return true;
+               }
+               else {
+               return false;
+               }
+       }
 
 //---------------------------------------------------------------------------
 __fastcall TForm1::TForm1(TComponent* Owner)
@@ -78,6 +122,28 @@ void __fastcall gameInitialization() {
      movesCounter = 0;
      actualPlayer = "";
 }
+void __fastcall setRandomNyanPosition(){
+
+   randomize();
+   Form1 -> Obstacle -> Left = random(Form1 ->Background -> Width - 50) + 50;
+   randomize();
+   Form1 -> Obstacle -> Top = random (Form1 ->Background -> Height - 50) + 50;
+
+   Form1 -> Obstacle -> Enabled = true;
+   Form1 -> Obstacle -> Visible = true;
+}
+
+void __fastcall setObstacle(){
+
+     switch (obstacleSymbol[obstacleNumber]) {
+            case 1: {
+                 ;
+            }
+            }
+
+     obstacleNumber++;
+}
+
 //---------------------------------------------------------------------------
 
 void __fastcall TForm1::BallMovementTimer(TObject *Sender) {
@@ -102,6 +168,8 @@ void __fastcall TForm1::BallMovementTimer(TObject *Sender) {
 
         BallMovement -> Enabled = false;
         Ball -> Visible = false;
+        Obstacle -> Visible = false;
+        NyanMovement -> Enabled = false;
         if (actualPlayer == "left") {
            leftPlayerPoints++;
            Label1 -> Caption = "<---PUNKT DLA GRACZA LEWEGO";
@@ -116,6 +184,8 @@ void __fastcall TForm1::BallMovementTimer(TObject *Sender) {
         Label1 -> Visible = true;
         Label2 -> Caption = IntToStr(leftPlayerPoints) + ":" + IntToStr(rightPlayerPoints);
         Label2 -> Visible = true;
+        Label3 -> Caption = "Odbicia: " +  IntToStr(movesCounter);
+        Label3 -> Visible = true;
         Button2 -> Enabled = true;
         Button2 -> Visible = true;
         Button3 -> Enabled = true;
@@ -128,6 +198,9 @@ void __fastcall TForm1::BallMovementTimer(TObject *Sender) {
 
         movesCounter ++;
         actualPlayer = "left";
+        if (movesCounter%3 == 0 && launchNyanObstacle()){
+           setRandomNyanPosition();
+        }
         //
         if(x < 0) {
             //top left paddle bounce
@@ -161,6 +234,10 @@ void __fastcall TForm1::BallMovementTimer(TObject *Sender) {
 
         movesCounter ++;
         actualPlayer = "right";
+         if (launchNyanObstacle()){
+           setRandomNyanPosition();
+           NyanMovement -> Enabled = true;
+        }
 
         if (x > 0) {
             //top right paddle bounce
@@ -183,6 +260,13 @@ void __fastcall TForm1::BallMovementTimer(TObject *Sender) {
                 x = -1.2 * x;
             }
         }
+    }
+    if (ballWithNyanCollision(Ball, Obstacle)&& Obstacle -> Visible == true){
+
+            x = -x;
+            y = -y;
+            Obstacle -> Visible = false;
+            NyanMovement -> Enabled = false;
     }
 }
 //---------------------------------------------------------------------------
@@ -246,6 +330,8 @@ void __fastcall TForm1::RightPaddleDownTimer(TObject *Sender) {
 void __fastcall TForm1::Button1Click(TObject *Sender)
 {
      gameInitialization();
+     generateNyanRounds();
+     generateObstacleSymbols();
      leftPlayerPoints = 0;
      rightPlayerPoints = 0;
      Button1 -> Enabled = false;
@@ -261,10 +347,14 @@ void __fastcall TForm1::Button2Click(TObject *Sender)
 {
      Label1 -> Visible = false;
      Label2 -> Visible = false;
+     Label3 -> Visible = false;
      Button2 -> Enabled = false;
      Button2 -> Visible = false;
      Button3 -> Enabled = false;
      Button3 -> Visible = false;
+     Obstacle -> Enabled = false;
+     Obstacle -> Visible = false;
+     generateNyanRounds();
      gameInitialization();
 }
 //---------------------------------------------------------------------------
@@ -273,13 +363,33 @@ void __fastcall TForm1::Button3Click(TObject *Sender)
 {
      Label1 -> Visible = false;
      Label2 -> Visible = false;
+     Label3 -> Visible = false;
      Button2 -> Enabled = false;
      Button2 -> Visible = false;
      Button3 -> Enabled = false;
      Button3 -> Visible = false;
+     Obstacle -> Enabled = false;
+     Obstacle -> Visible = false;
      gameInitialization();
+     generateNyanRounds();
+     generateObstacleSymbols();
      leftPlayerPoints = 0;
      rightPlayerPoints = 0;
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::NyanMovementTimer(TObject *Sender)
+{
+   //initial nyan movement
+    Obstacle -> Top  += verticalNyanMovement;
+    //top of the screen bounce
+    if (Obstacle -> Top -5 <= Background -> Top) {
+        verticalNyanMovement = -verticalNyanMovement;
+    }
+    //bottom of the screen bounce
+    if (Obstacle -> Top>= Background -> Height - Background -> Top - Obstacle -> Height + 10) {
+        verticalNyanMovement = -verticalNyanMovement;
+    }
 }
 //---------------------------------------------------------------------------
 

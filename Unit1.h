@@ -28,6 +28,9 @@ __published:	// IDE-managed Components
         TButton *Button2;
         TButton *Button3;
         TLabel *Label2;
+        TLabel *Label3;
+        TImage *Obstacle;
+        TTimer *NyanMovement;
     void __fastcall BallMovementTimer(TObject *Sender);
     void __fastcall LeftPaddleUpTimer(TObject *Sender);
     void __fastcall RightPaddleUpTimer(TObject *Sender);
@@ -40,6 +43,7 @@ __published:	// IDE-managed Components
         void __fastcall Button1Click(TObject *Sender);
         void __fastcall Button2Click(TObject *Sender);
         void __fastcall Button3Click(TObject *Sender);
+        void __fastcall NyanMovementTimer(TObject *Sender);
 private:	// User declarations
 public:		// User declarations
     __fastcall TForm1(TComponent* Owner);
