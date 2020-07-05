@@ -2,6 +2,7 @@
 
 #include <vcl.h>
 #include <algorithm>
+#include "mmsystem.h"
 #pragma hdrstop
 
 #include "Unit1.h"
@@ -170,10 +171,10 @@ void __fastcall setObstacle() {
     }
     break;
     case 3: {
-         Form1 -> LeftPaddle -> Visible = false;
-         Form1 -> RightPaddle -> Visible = false;
+        Form1 -> LeftPaddle -> Visible = false;
+        Form1 -> RightPaddle -> Visible = false;
 
-         Form1 -> InvisiblePaddles -> Enabled = true;
+        Form1 -> InvisiblePaddles -> Enabled = true;
     }
     break;
     }
@@ -221,8 +222,11 @@ void __fastcall TForm1::BallMovementTimer(TObject *Sender) {
             leftPlayerPoints++;
             Label1 -> Caption = "<---PUNKT DLA GRACZA LEWEGO";
         }
-        if (movesCounter >= matchRecord){
+        if (movesCounter >= matchRecord) {
             matchRecord = movesCounter;
+        }
+        if (enableMusic) {
+            sndPlaySound("snd/meowOut.wav", SND_ASYNC);
         }
         Label1 -> Visible = true;
         Label2 -> Caption = IntToStr(leftPlayerPoints) + ":" + IntToStr(rightPlayerPoints);
@@ -308,7 +312,9 @@ void __fastcall TForm1::BallMovementTimer(TObject *Sender) {
         }
     }
     if (ballWithNyanCollision(Ball, Obstacle)&& Obstacle -> Visible == true) {
-
+        if (enableMusic) {
+            sndPlaySound("snd/bounce.wav", SND_ASYNC);
+        }
         x = -x;
         y = -y;
         Obstacle -> Visible = false;
@@ -375,6 +381,10 @@ void __fastcall TForm1::RightPaddleDownTimer(TObject *Sender) {
 //---------------------------------------------------------------------------
 
 void __fastcall TForm1::Button1Click(TObject *Sender) {
+
+    if (enableMusic) {
+        sndPlaySound("snd/click.wav", SND_ASYNC);
+    }
     gameInitialization();
     generateNyanRounds();
     generateObstacleSymbols();
@@ -390,6 +400,10 @@ void __fastcall TForm1::Button1Click(TObject *Sender) {
 
 
 void __fastcall TForm1::Button2Click(TObject *Sender) {
+
+    if (enableMusic) {
+        sndPlaySound("snd/click.wav", SND_ASYNC);
+    }
     Label1 -> Visible = false;
     Label2 -> Visible = false;
     Label3 -> Visible = false;
@@ -405,6 +419,10 @@ void __fastcall TForm1::Button2Click(TObject *Sender) {
 //---------------------------------------------------------------------------
 
 void __fastcall TForm1::Button3Click(TObject *Sender) {
+
+    if (enableMusic) {
+        sndPlaySound("snd/click.wav", SND_ASYNC);
+    }
     Label1 -> Visible = false;
     Label2 -> Visible = false;
     Label3 -> Visible = false;
@@ -477,8 +495,11 @@ void __fastcall TForm1::Ball2MovementTimer(TObject *Sender) {
             leftPlayerPoints++;
             Label1 -> Caption = "<---PUNKT DLA GRACZA LEWEGO";
         }
-         if (movesCounter >= matchRecord){
+        if (movesCounter >= matchRecord) {
             matchRecord = movesCounter;
+        }
+        if (enableMusic) {
+            sndPlaySound("snd/meowOut.wav", SND_ASYNC);
         }
         Label1 -> Visible = true;
         Label2 -> Caption = IntToStr(leftPlayerPoints) + ":" + IntToStr(rightPlayerPoints);
@@ -529,7 +550,7 @@ void __fastcall TForm1::Ball2MovementTimer(TObject *Sender) {
     if (Ball2 -> Left + Ball2 -> Width >= RightPaddle -> Left &&
             Ball2 -> Top + Ball2 -> Height/2 <= RightPaddle -> Top + RightPaddle -> Height &&
             Ball2 -> Top + Ball2 -> Height/2 >= RightPaddle -> Top) {
-            
+
         movesCounter ++;
         Label5 -> Caption = IntToStr(movesCounter);
         if (x2 > 0) {
@@ -557,18 +578,17 @@ void __fastcall TForm1::Ball2MovementTimer(TObject *Sender) {
 }
 //---------------------------------------------------------------------------
 
-void __fastcall TForm1::InvisiblePaddlesTimer(TObject *Sender)
-{
-   debuffTimer--;
+void __fastcall TForm1::InvisiblePaddlesTimer(TObject *Sender) {
+    debuffTimer--;
 
-   if (debuffTimer == 0){
+    if (debuffTimer == 0) {
 
         LeftPaddle -> Visible = true;
         RightPaddle -> Visible = true;
         InvisiblePaddles -> Enabled = false;
 
         debuffTimer = 5;
-   }
+    }
 }
 //---------------------------------------------------------------------------
 
