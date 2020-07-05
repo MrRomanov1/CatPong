@@ -592,3 +592,22 @@ void __fastcall TForm1::InvisiblePaddlesTimer(TObject *Sender) {
 }
 //---------------------------------------------------------------------------
 
+void __fastcall TForm1::FormCreate(TObject *Sender)
+{
+ {
+     Application->MessageBox(
+        "Witaj w grze CatPong.\n\n"
+        "Lewy gracz steruje wciskaj¹c klawisze A oraz Z.\n"
+        "Prawy gracz steruje wciskaj¹c strza³ki góra i dó³.\n\n"
+        "Paletka posiada trzy strefy, odbijaj¹c pi³kê pod ró¿nym k¹tem.\n\n"
+        "W ró¿nych momentach pojawia siê bouncer w postaci Nyan Cata. \n"
+        "Uderzenie w niego pi³k¹ powoduje pojawienie siê losowych przeszkód: \n"
+        "1. Rozszczepienie pi³ki na dwie oddzielne,\n"
+        "2. Przyspieszenie gry, \n"
+        "3. Niewidzialne paletki.\n\n"
+        "Pi³ka startuje w losowym kierunku z losow¹ prêdkoœci¹\n"
+        "Mi³ej zabawy!", "CatPong",MB_OK);
+}
+}
+//---------------------------------------------------------------------------
+

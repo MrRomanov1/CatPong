@@ -4,9 +4,9 @@ object Form1: TForm1
   Align = alCustom
   BorderStyle = bsToolWindow
   BorderWidth = 5
-  Caption = 'PingPongTheGame'
-  ClientHeight = 576
-  ClientWidth = 1023
+  Caption = 'CatPong'
+  ClientHeight = 586
+  ClientWidth = 1033
   Color = clBtnFace
   UseDockManager = True
   Font.Charset = DEFAULT_CHARSET
@@ -15,6 +15,7 @@ object Form1: TForm1
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
+  OnCreate = FormCreate
   OnKeyDown = FormKeyDown
   OnKeyUp = FormKeyUp
   PixelsPerInch = 96
